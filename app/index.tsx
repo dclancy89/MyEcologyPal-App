@@ -1,90 +1,101 @@
 import { Button, Pressable, Text, View } from "react-native";
+import {
+  LocationContext,
+  LocationContextType,
+} from "@/contexts/LocationContext";
+import { useContext, useState } from "react";
 
 export default function Index({ navigation }: any) {
+  const { location } = useContext(LocationContext) as LocationContextType;
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "space-around",
-        alignItems: "center",
-        alignContent: "space-around",
-        flexWrap: "wrap",
-        flexDirection: "row",
-        gap: 8,
-      }}
-    >
-      <Pressable
+    <>
+      <View>
+        <Text>Current Location ID: {location}</Text>
+      </View>
+      <View
         style={{
-          width: "40%",
-          height: "40%",
-          borderColor: "black",
-          borderWidth: 2,
-          justifyContent: "center",
+          flex: 1,
+          justifyContent: "space-around",
           alignItems: "center",
-          backgroundColor: "#787878",
-        }}
-        onPress={() => {
-          navigation.navigate("ChooseLocation");
+          alignContent: "space-around",
+          flexWrap: "wrap",
+          flexDirection: "row",
+          gap: 8,
         }}
       >
-        <Text
+        <Pressable
           style={{
-            color: "#FFFFFF",
-            fontSize: 48,
-            textAlign: "center",
+            width: "40%",
+            height: "40%",
+            borderColor: "black",
+            borderWidth: 2,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#787878",
+          }}
+          onPress={() => {
+            navigation.navigate("ChooseLocation");
           }}
         >
-          Select Location
-        </Text>
-      </Pressable>
-      <Pressable
-        style={{
-          width: "40%",
-          height: "40%",
-          borderColor: "black",
-          borderWidth: 2,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#787878",
-        }}
-        onPress={() => {
-          navigation.navigate("ManageLocations");
-        }}
-      >
-        <Text
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontSize: 48,
+              textAlign: "center",
+            }}
+          >
+            Select Location
+          </Text>
+        </Pressable>
+        <Pressable
           style={{
-            color: "#FFFFFF",
-            fontSize: 48,
-            textAlign: "center",
+            width: "40%",
+            height: "40%",
+            borderColor: "black",
+            borderWidth: 2,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#787878",
+          }}
+          onPress={() => {
+            navigation.navigate("ManageLocations");
           }}
         >
-          Manage Locations
-        </Text>
-      </Pressable>
-      <Pressable
-        style={{
-          width: "40%",
-          height: "40%",
-          borderColor: "black",
-          borderWidth: 2,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#787878",
-        }}
-        onPress={() => {
-          navigation.navigate("Settings");
-        }}
-      >
-        <Text
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontSize: 48,
+              textAlign: "center",
+            }}
+          >
+            Manage Locations
+          </Text>
+        </Pressable>
+        <Pressable
           style={{
-            color: "#FFFFFF",
-            fontSize: 48,
-            textAlign: "center",
+            width: "40%",
+            height: "40%",
+            borderColor: "black",
+            borderWidth: 2,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#787878",
+          }}
+          onPress={() => {
+            navigation.navigate("Settings");
           }}
         >
-          Settings
-        </Text>
-      </Pressable>
-    </View>
+          <Text
+            style={{
+              color: "#FFFFFF",
+              fontSize: 48,
+              textAlign: "center",
+            }}
+          >
+            Settings
+          </Text>
+        </Pressable>
+      </View>
+    </>
   );
 }
