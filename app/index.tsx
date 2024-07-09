@@ -10,7 +10,7 @@ export default function Index({ navigation }: any) {
   return (
     <>
       <View>
-        <Text>Current Location ID: {location}</Text>
+        <Text>Current Location ID: {location.id}</Text>
       </View>
       <View
         style={{
@@ -32,6 +32,7 @@ export default function Index({ navigation }: any) {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#787878",
+            borderRadius: 10,
           }}
           onPress={() => {
             navigation.navigate("ChooseLocation");
@@ -56,9 +57,10 @@ export default function Index({ navigation }: any) {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#787878",
+            borderRadius: 10,
           }}
           onPress={() => {
-            navigation.navigate("ManageLocations");
+            navigation.navigate("CollectData");
           }}
         >
           <Text
@@ -68,7 +70,7 @@ export default function Index({ navigation }: any) {
               textAlign: "center",
             }}
           >
-            Manage Locations
+            Collect Data
           </Text>
         </Pressable>
         <Pressable
@@ -80,6 +82,7 @@ export default function Index({ navigation }: any) {
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: "#787878",
+            borderRadius: 10,
           }}
           onPress={() => {
             navigation.navigate("Settings");

@@ -2,9 +2,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Index from "./index";
 import ChooseLocation from "./ChooseLocation";
-import ManageLocations from "./ManageLocations";
+import CollectData from "./CollectData";
 import Settings from "./Settings";
-import LocationProvider from "@/contexts/LocationContext";
+import LocationProvider, {
+  LocationContext,
+  LocationContextType,
+} from "@/contexts/LocationContext";
+import { useContext } from "react";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,12 +24,14 @@ export default function RootLayout() {
         <Stack.Screen
           name="ChooseLocation"
           component={ChooseLocation}
-          options={{ title: "Choose Location" }}
+          options={{
+            title: "Choose Location",
+          }}
         />
         <Stack.Screen
-          name="ManageLocations"
-          component={ManageLocations}
-          options={{ title: "Manage Locations" }}
+          name="CollectData"
+          component={CollectData}
+          options={{ title: "Collect Data" }}
         />
         <Stack.Screen
           name="Settings"

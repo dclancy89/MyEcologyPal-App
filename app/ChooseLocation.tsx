@@ -4,6 +4,7 @@ import Mapbox, { Camera, MapView } from "@rnmapbox/maps";
 import {
   LocationContext,
   LocationContextType,
+  Location,
 } from "@/contexts/LocationContext";
 
 Mapbox.setAccessToken(
@@ -17,16 +18,6 @@ const data = {
     ["3", "Other Location", "Other, IN"],
   ],
 };
-
-interface Location {
-  id: number;
-  name: string;
-  city: string;
-  state: string;
-  numDataPoints: number;
-  lat: number;
-  lon: number;
-}
 
 const locations: Location[] = [
   {
@@ -80,7 +71,7 @@ export default function ChooseLocation({ navigation }: any) {
       }}
     >
       <View>
-        <Text>Current Location ID: {location}</Text>
+        <Text>Current Location ID: {location.id}</Text>
       </View>
       <Text style={{ fontSize: 20, marginBottom: 20 }}>
         Choose a Location for Data Collection
@@ -111,7 +102,7 @@ export default function ChooseLocation({ navigation }: any) {
               <Text>Data Points: {loc.numDataPoints}</Text>
               <Pressable
                 onPress={() => {
-                  setLocation(loc.id);
+                  setLocation(loc);
                   alert(`${loc.id} set as primary location`);
                 }}
               >
