@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.danieltclancy.MyEcologyPal"
     },
     "web": {
       "bundler": "metro",
@@ -27,7 +28,11 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "@rnmapbox/maps",
+      {
+        "RNMapboxMapsDownloadToken": "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
+      }
     ],
     "experiments": {
       "typedRoutes": true
