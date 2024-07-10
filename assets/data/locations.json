@@ -1,0 +1,38 @@
+[
+    {
+        "id": 123,
+        "name": "Lemon Lake",
+        "city": "Crown Point",
+        "state": "Indiana",
+        "numDataPoints": 123,
+        "lat": -87.40433434232925,
+        "lon": 41.38288884846694
+    },
+    {
+        "id": 124,
+        "name": "Deep River",
+        "city": "Hobart",
+        "state": "Indiana",
+        "numDataPoints": 124,
+        "lat": -87.40433434232925,
+        "lon": 41.38288884846694
+    },
+    {
+        "id": 125,
+        "name": "Stoney Run",
+        "city": "Crown Point",
+        "state": "Indiana",
+        "numDataPoints": 125,
+        "lat": -87.40433434232925,
+        "lon": 41.38288884846694
+    },
+    {
+        "id": 126,
+        "name": "Indiana Dunes",
+        "city": "Hammond",
+        "state": "Indiana",
+        "numDataPoints": 126,
+        "lat": -87.40433434232925,
+        "lon": 41.38288884846694
+    }
+]

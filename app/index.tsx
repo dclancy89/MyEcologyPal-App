@@ -5,15 +5,18 @@ import {
 } from "@/contexts/LocationContext";
 import { useContext } from "react";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
+import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
 
 interface HomePageButton {
   content: string;
   navigationLocation: string;
+  allowedOffline: boolean;
 }
 
 export default function Index({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
+  const { mode, setMode } = useContext(ModeContext) as ModeContextType;
 
   const styles = StyleSheet.create({
     container: {
@@ -32,15 +35,15 @@ export default function Index({ navigation }: any) {
     button: {
       width: "40%",
       height: "40%",
-      // borderColor: "white",
-      // borderWidth: 2,
+      // borderColor: "black",
+      // borderWidth: 1,
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: theme.button,
       borderRadius: 10,
     },
     buttonText: {
-      color: "#FFFFFF",
+      color: "#FFF",
       fontSize: 48,
       textAlign: "center",
     },
@@ -50,14 +53,17 @@ export default function Index({ navigation }: any) {
     {
       content: "Select Location",
       navigationLocation: "ChooseLocation",
+      allowedOffline: false,
     },
     {
       content: "Collect Data",
       navigationLocation: "CollectData",
+      allowedOffline: true,
     },
     {
       content: "Settings",
       navigationLocation: "Settings",
+      allowedOffline: true,
     },
   ];
 
@@ -65,6 +71,7 @@ export default function Index({ navigation }: any) {
     <View style={styles.container}>
       <View>
         <Text>Current Location ID: {location.id}</Text>
+        <Text>Current Mode: {mode}</Text>
       </View>
 
       <View style={styles.buttonsContainer}>
@@ -73,7 +80,11 @@ export default function Index({ navigation }: any) {
             <Pressable
               style={styles.button}
               onPress={() => {
-                navigation.navigate(button.navigationLocation);
+                if (mode === AppMode.Online || button.allowedOffline) {
+                  navigation.navigate(button.navigationLocation);
+                } else {
+                  alert("This feature is not allowed if offline mode");
+                }
               }}
             >
               <Text style={styles.buttonText}>{button.content}</Text>
@@ -82,9 +93,18 @@ export default function Index({ navigation }: any) {
         })}
       </View>
       <Button
-        title="Switch to Offline Mode"
+        color={mode === AppMode.Online ? "green" : "red"}
+        title={`Switch to ${
+          mode === AppMode.Online ? "Offline" : "Online"
+        } Mode`}
         onPress={() => {
-          alert("toggle");
+          if (mode === AppMode.Online) {
+            alert("Switching to Offline Mode");
+            setMode(AppMode.Offline);
+          } else {
+            alert("Switching to Online Mode");
+            setMode(AppMode.Online);
+          }
         }}
       />
     </View>

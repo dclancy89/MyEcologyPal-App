@@ -7,56 +7,19 @@ import {
   Location,
 } from "@/contexts/LocationContext";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
+import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
+import locations from "@/assets/data/locations.json";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
 );
-
-const locations: Location[] = [
-  {
-    id: 123,
-    name: "Lemon Lake",
-    city: "Crown Point",
-    state: "Indiana",
-    numDataPoints: 123,
-    lat: -87.40433434232925,
-    lon: 41.38288884846694,
-  },
-  {
-    id: 124,
-    name: "Lemon Lake",
-    city: "Crown Point",
-    state: "Indiana",
-    numDataPoints: 124,
-    lat: -87.40433434232925,
-    lon: 41.38288884846694,
-  },
-  {
-    id: 125,
-    name: "Lemon Lake",
-    city: "Crown Point",
-    state: "Indiana",
-    numDataPoints: 125,
-    lat: -87.40433434232925,
-    lon: 41.38288884846694,
-  },
-  {
-    id: 126,
-    name: "Lemon Lake",
-    city: "Crown Point",
-    state: "Indiana",
-    numDataPoints: 126,
-    lat: -87.40433434232925,
-    lon: 41.38288884846694,
-  },
-];
 
 export default function ChooseLocation({ navigation }: any) {
   const { location, setLocation } = useContext(
     LocationContext
   ) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
-
+  const { mode } = useContext(ModeContext) as ModeContextType;
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -93,12 +56,13 @@ export default function ChooseLocation({ navigation }: any) {
 
   return (
     <ScrollView overScrollMode={"never"} style={styles.container}>
-      <View>
+      <View style={{ marginBottom: 20 }}>
         <Text>Current Location ID: {location.id}</Text>
+        <Text>Current Mode: {mode}</Text>
       </View>
-      <Text style={{ fontSize: 20, marginBottom: 20 }}>
+      {/* <Text style={{ fontSize: 20, marginBottom: 20 }}>
         Choose a Location for Data Collection
-      </Text>
+      </Text> */}
       {locations.map((loc) => {
         return (
           <View style={styles.locationCard}>
@@ -112,8 +76,9 @@ export default function ChooseLocation({ navigation }: any) {
               <Text>Data Points: {loc.numDataPoints}</Text>
               <Pressable
                 onPress={() => {
-                  setLocation(loc);
-                  alert(`${loc.id} set as primary location`);
+                  // setLocation(loc);
+                  // alert(`${loc.id} set as primary location`);
+                  navigation.navigate("Location", { locationId: loc.id });
                 }}
               >
                 <Text style={styles.locationCardButton}>Select Location</Text>
