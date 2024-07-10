@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Mapbox, { Camera, MapView } from "@rnmapbox/maps";
 import {
@@ -6,18 +6,11 @@ import {
   LocationContextType,
   Location,
 } from "@/contexts/LocationContext";
+import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
 );
-const data = {
-  head: ["ID", "Name", "Location"],
-  rows: [
-    ["1", "Lemon Lake", "Crown Point, IN"],
-    ["2", "Deep River", "Valparaiso, IN"],
-    ["3", "Other Location", "Other, IN"],
-  ],
-};
 
 const locations: Location[] = [
   {
@@ -62,14 +55,44 @@ export default function ChooseLocation({ navigation }: any) {
   const { location, setLocation } = useContext(
     LocationContext
   ) as LocationContextType;
+  const { theme } = useContext(ThemeContext) as ThemeContextType;
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 10,
+      backgroundColor: theme.background,
+    },
+    locationCard: {
+      width: "100%",
+      gap: 10,
+      flexDirection: "row",
+      justifyContent: "space-between",
+      borderColor: "black",
+      borderWidth: 2,
+      borderRadius: 5,
+      padding: 10,
+      marginBottom: 10,
+      minHeight: 250,
+      backgroundColor: theme.secondary,
+    },
+    locationCardButton: {
+      fontSize: 30,
+      borderColor: "#000",
+      borderWidth: 2,
+      backgroundColor: theme.button,
+      color: "white",
+      marginTop: 20,
+      padding: 5,
+      textAlign: "center",
+    },
+    map: {
+      flex: 1,
+    },
+  });
+
   return (
-    <ScrollView
-      overScrollMode={"never"}
-      style={{
-        flex: 1,
-        padding: 10,
-      }}
-    >
+    <ScrollView overScrollMode={"never"} style={styles.container}>
       <View>
         <Text>Current Location ID: {location.id}</Text>
       </View>
@@ -78,20 +101,7 @@ export default function ChooseLocation({ navigation }: any) {
       </Text>
       {locations.map((loc) => {
         return (
-          <View
-            style={{
-              width: "100%",
-              gap: 10,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              borderColor: "black",
-              borderWidth: 2,
-              borderRadius: 5,
-              padding: 10,
-              marginBottom: 10,
-              minHeight: 250,
-            }}
-          >
+          <View style={styles.locationCard}>
             <View style={{ flex: 1 }}>
               <Text style={{ fontSize: 24 }}>Name: {loc.name}</Text>
               <Text>
@@ -106,20 +116,7 @@ export default function ChooseLocation({ navigation }: any) {
                   alert(`${loc.id} set as primary location`);
                 }}
               >
-                <Text
-                  style={{
-                    fontSize: 30,
-                    borderColor: "#000",
-                    borderWidth: 2,
-                    backgroundColor: "grey",
-                    color: "white",
-                    marginTop: 20,
-                    padding: 5,
-                    textAlign: "center",
-                  }}
-                >
-                  Select Location
-                </Text>
+                <Text style={styles.locationCardButton}>Select Location</Text>
               </Pressable>
             </View>
 
@@ -138,12 +135,3 @@ export default function ChooseLocation({ navigation }: any) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: "#fff" },
-  head: { height: 40, backgroundColor: "#f1f8ff" },
-  text: { margin: 6 },
-  map: {
-    flex: 1,
-  },
-});
