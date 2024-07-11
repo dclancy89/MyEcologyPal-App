@@ -3,6 +3,10 @@ import Index from "./index";
 import ChooseLocation from "./ChooseLocation";
 import CollectData from "./CollectData";
 import Settings from "./Settings";
+import WaterSample from "./WaterSample";
+import InvasiveSpecies from "./InvasiveSpecies";
+import TrailDamage from "./TrailDamage";
+import AtRiskSpecies from "./AtRiskSpecies";
 import LocationScreen from "./Location";
 import LocationProvider from "@/contexts/LocationContext";
 import ThemeProvider from "@/contexts/ThemeContext";
@@ -42,6 +46,26 @@ export default function RootLayout() {
               name="Location"
               component={LocationScreen}
               options={{ title: "Location" }}
+            />
+            <Stack.Screen
+              name="WaterSample"
+              component={WaterSample}
+              options={{ title: "Water Sample" }}
+            />
+            <Stack.Screen
+              name="InvasiveSpecies"
+              component={InvasiveSpecies}
+              options={{ title: "Invasive Species" }}
+            />
+            <Stack.Screen
+              name="TrailDamage"
+              component={TrailDamage}
+              options={{ title: "Trail Damage" }}
+            />
+            <Stack.Screen
+              name="AtRiskSpecies"
+              component={AtRiskSpecies}
+              options={{ title: "At Risk Species" }}
             />
           </Stack.Navigator>
         </LocationProvider>

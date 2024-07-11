@@ -1,5 +1,12 @@
 import { useContext, useState } from "react";
-import { Text, View, StyleSheet, ScrollView } from "react-native";
+import {
+  Button,
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+} from "react-native";
 import Mapbox, { Camera, MapView } from "@rnmapbox/maps";
 import {
   LocationContext,
@@ -51,15 +58,15 @@ export default function LocationScreen({ route, navigation }: any) {
       minHeight: 250,
       backgroundColor: theme.secondary,
     },
-    locationCardButton: {
-      fontSize: 30,
+    button: {
+      fontSize: 20,
       borderColor: "#000",
       borderWidth: 2,
       backgroundColor: theme.button,
       color: "white",
-      marginTop: 20,
-      padding: 5,
+      padding: 10,
       textAlign: "center",
+      minWidth: 300,
     },
     map: {
       flex: 1,
@@ -83,14 +90,25 @@ export default function LocationScreen({ route, navigation }: any) {
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
-      <View>
-        <Text style={{ fontSize: 24 }}>Name: {locationToView.name}</Text>
-        <Text>
-          Location: {locationToView.city}, {locationToView.state}
-        </Text>
-        <Text>ID: {locationToView.id}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View>
+          <Text style={{ fontSize: 24 }}>Name: {locationToView.name}</Text>
+          <Text>
+            Location: {locationToView.city}, {locationToView.state}
+          </Text>
+          <Text>ID: {locationToView.id}</Text>
 
-        <Text>Data Points: {locationToView.numDataPoints}</Text>
+          <Text>Data Points: {locationToView.numDataPoints}</Text>
+        </View>
+        <View style={{ marginRight: 30 }}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate("CollectData");
+            }}
+          >
+            <Text style={styles.button}>Collect Data</Text>
+          </Pressable>
+        </View>
       </View>
       <View
         style={{

@@ -5,33 +5,9 @@ import {
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
 import { useContext } from "react";
-import { StyleSheet, Pressable, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-const dataTemplates = [
-  {
-    name: "Water Sample",
-    description: "Collect data from a water sample with a test strip.",
-    navigationLocation: "WaterSample",
-  },
-  {
-    name: "Invasive Species",
-    description:
-      "Record and report the existance and location of an invasive species.",
-    navigationLocation: "InvasiveSpecies",
-  },
-  {
-    name: "Trail Damage",
-    description: "Record and report damage to trail or a need for maintanance.",
-    navigationLocation: "TrailDamage",
-  },
-  {
-    name: "At Risk Species",
-    description: "Record and report a rare or at risk species.",
-    navigationLocation: "AtRiskSpecies",
-  },
-];
-
-export default function CollectData({ navigation }: any) {
+export default function InvasiveSpecies({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
@@ -77,7 +53,7 @@ export default function CollectData({ navigation }: any) {
         <Text>Current Mode: {mode}</Text>
       </View>
       <View>
-        <Text>Choose a type of data to collect</Text>
+        <Text>Invasive Species</Text>
         <View
           style={{
             width: "100%",
@@ -85,21 +61,7 @@ export default function CollectData({ navigation }: any) {
             alignItems: "center",
             marginTop: 10,
           }}
-        >
-          {dataTemplates.map((template) => {
-            return (
-              <Pressable
-                style={styles.locationCard}
-                onPress={() => {
-                  navigation.navigate(template.navigationLocation);
-                }}
-              >
-                <Text style={{ fontSize: 25 }}>{template.name}</Text>
-                <Text>{template.description}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        ></View>
       </View>
     </View>
   );

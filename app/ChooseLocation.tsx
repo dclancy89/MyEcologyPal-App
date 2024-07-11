@@ -4,7 +4,6 @@ import Mapbox, { Camera, MapView } from "@rnmapbox/maps";
 import {
   LocationContext,
   LocationContextType,
-  Location,
 } from "@/contexts/LocationContext";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
