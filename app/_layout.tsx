@@ -8,6 +8,8 @@ import InvasiveSpecies from "./InvasiveSpecies";
 import TrailDamage from "./TrailDamage";
 import AtRiskSpecies from "./AtRiskSpecies";
 import LocationScreen from "./Location";
+import UploadData from "./UploadData";
+
 import LocationProvider from "@/contexts/LocationContext";
 import ThemeProvider from "@/contexts/ThemeContext";
 import ModeProvider from "@/contexts/ModeContext";
@@ -66,6 +68,11 @@ export default function RootLayout() {
               name="AtRiskSpecies"
               component={AtRiskSpecies}
               options={{ title: "At Risk Species" }}
+            />
+            <Stack.Screen
+              name="UploadData"
+              component={UploadData}
+              options={{ title: "Upload Data" }}
             />
           </Stack.Navigator>
         </LocationProvider>

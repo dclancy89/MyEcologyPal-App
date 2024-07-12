@@ -65,6 +65,11 @@ export default function Index({ navigation }: any) {
       navigationLocation: "Settings",
       allowedOffline: true,
     },
+    {
+      content: "Upload Data",
+      navigationLocation: "UploadData",
+      allowedOffline: false,
+    },
   ];
 
   return (

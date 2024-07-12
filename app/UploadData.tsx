@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 
-export default function InvasiveSpecies({ navigation }: any) {
+export default function UploadData({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
@@ -70,51 +70,24 @@ export default function InvasiveSpecies({ navigation }: any) {
   });
 
   const dropdownOptions = [
-    { label: "Plant", value: "plant" },
-    { label: "Animal", value: "animal" },
+    { label: "Overgrown Trail", value: "OT" },
+    { label: "Blocked Trail", value: "BT" },
+    { label: "Damaged Structure", value: "DS" },
+    { label: "Ground Damage", value: "GD" },
   ];
 
   return (
-    <ScrollView style={styles.container} overScrollMode={"never"}>
+    <View style={styles.container}>
       <View style={{ marginBottom: 20 }}>
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
-      <View style={{ marginBottom: 50 }}>
-        <Text style={{ fontSize: 30 }}>Invasive Species</Text>
-        <Text>Category</Text>
-        <Dropdown
-          style={styles.dropdown}
-          data={dropdownOptions}
-          maxHeight={300}
-          labelField="label"
-          valueField="value"
-          placeholder="Select item"
-          value={category}
-          onChange={(item) => {
-            setCategory(item.value);
-          }}
-        />
-
-        <Text>Species (or common name)</Text>
-        <TextInput style={styles.inputLast} />
-        <View style={{ marginBottom: 20 }}>
-          <Button
-            color={theme.button}
-            title="Add Picture(s)"
-            onPress={() => {
-              alert("Pictures coming soon...");
-            }}
-          />
-        </View>
-        <Button
-          color={theme.button}
-          title="Record Data"
-          onPress={() => {
-            alert("recording data...");
-          }}
-        />
-      </View>
-    </ScrollView>
+      <Button
+        title="Upload Data"
+        onPress={() => {
+          alert("Uploading data...");
+        }}
+      />
+    </View>
   );
 }

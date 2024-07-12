@@ -5,7 +5,14 @@ import {
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
 import { useContext } from "react";
-import { StyleSheet, Text, TextInput, View, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  ScrollView,
+  Button,
+} from "react-native";
 
 export default function WaterSample({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
@@ -48,6 +55,11 @@ export default function WaterSample({ navigation }: any) {
       borderWidth: 1,
       padding: 10,
     },
+    inputLast: {
+      borderWidth: 1,
+      padding: 10,
+      marginBottom: 20,
+    },
   });
 
   return (
@@ -56,8 +68,8 @@ export default function WaterSample({ navigation }: any) {
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
-      <View>
-        <Text>Water Sample 2</Text>
+      <View style={{ marginBottom: 50 }}>
+        <Text style={{ fontSize: 30 }}>Water Sample</Text>
         <Text>pH</Text>
         <TextInput style={styles.input} />
         <Text>Hardness</Text>
@@ -89,15 +101,23 @@ export default function WaterSample({ navigation }: any) {
         <Text>Sodium Chloride</Text>
         <TextInput style={styles.input} />
         <Text>Total Alkalynity</Text>
-        <TextInput style={styles.input} />
-        {/* <View
-          style={{
-            width: "100%",
-            flex: 1,
-            alignItems: "center",
-            marginTop: 10,
+        <TextInput style={styles.inputLast} />
+        <View style={{ marginBottom: 20 }}>
+          <Button
+            color={theme.button}
+            title="Add Picture(s)"
+            onPress={() => {
+              alert("Pictures coming soon...");
+            }}
+          />
+        </View>
+        <Button
+          color={theme.button}
+          title="Record Data"
+          onPress={() => {
+            alert("recording data...");
           }}
-        ></View> */}
+        />
       </View>
     </ScrollView>
   );

@@ -4,13 +4,23 @@ import {
 } from "@/contexts/LocationContext";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
-import { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { useContext, useState } from "react";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TextInput,
+} from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function AtRiskSpecies({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
+
+  const [category, setCategory] = useState<string>("");
 
   const styles = StyleSheet.create({
     container: {
@@ -44,25 +54,67 @@ export default function AtRiskSpecies({ navigation }: any) {
     map: {
       flex: 1,
     },
+    input: {
+      borderWidth: 1,
+      padding: 10,
+    },
+    inputLast: {
+      borderWidth: 1,
+      padding: 10,
+      marginBottom: 20,
+    },
+    dropdown: {
+      borderWidth: 1,
+      padding: 10,
+    },
   });
 
+  const dropdownOptions = [
+    { label: "Plant", value: "plant" },
+    { label: "Animal", value: "animal" },
+  ];
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} overScrollMode={"never"}>
       <View style={{ marginBottom: 20 }}>
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
-      <View>
-        <Text>At Risk Species</Text>
-        <View
-          style={{
-            width: "100%",
-            flex: 1,
-            alignItems: "center",
-            marginTop: 10,
+      <View style={{ marginBottom: 50 }}>
+        <Text style={{ fontSize: 30 }}>At Risk Species</Text>
+        <Text>Category</Text>
+        <Dropdown
+          style={styles.dropdown}
+          data={dropdownOptions}
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder="Select item"
+          value={category}
+          onChange={(item) => {
+            setCategory(item.value);
           }}
-        ></View>
+        />
+
+        <Text>Species (or common name)</Text>
+        <TextInput style={styles.inputLast} />
+        <View style={{ marginBottom: 20 }}>
+          <Button
+            color={theme.button}
+            title="Add Picture(s)"
+            onPress={() => {
+              alert("Pictures coming soon...");
+            }}
+          />
+        </View>
+        <Button
+          color={theme.button}
+          title="Record Data"
+          onPress={() => {
+            alert("recording data...");
+          }}
+        />
       </View>
-    </View>
+    </ScrollView>
   );
 }
