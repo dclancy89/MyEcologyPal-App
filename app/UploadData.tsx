@@ -20,8 +20,6 @@ export default function UploadData({ navigation }: any) {
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
 
-  const [category, setCategory] = useState<string>("");
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Text, View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Mapbox, { Camera, MapView } from "@rnmapbox/maps";
 import {
@@ -8,6 +8,9 @@ import {
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
 import locations from "@/assets/data/locations.json";
+import { API_KEY, GET_LOCATIONS_API } from "@/constants/Api";
+import axios from "axios";
+import utf8 from "utf8";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
@@ -17,6 +20,8 @@ export default function ChooseLocation({ navigation }: any) {
   const { location, setLocation } = useContext(
     LocationContext
   ) as LocationContextType;
+  const [locationsFromApi, setLocationsFromApi] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
   const styles = StyleSheet.create({
@@ -53,6 +58,32 @@ export default function ChooseLocation({ navigation }: any) {
     },
   });
 
+  useEffect(() => {
+    axios
+      .get(GET_LOCATIONS_API, {
+        headers: {
+          "x-api-key": API_KEY,
+          Accept: "application/json",
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        setLocationsFromApi(
+          res.data.map((location: any) => {
+            return {
+              id: location.id,
+              name: location.name,
+              city: location.city,
+              state: location.state,
+              lat: location.lat,
+              lon: location.lon,
+            };
+          })
+        );
+      });
+    setIsLoading(false);
+  }, []);
+
   return (
     <ScrollView overScrollMode={"never"} style={styles.container}>
       <View style={{ marginBottom: 20 }}>
@@ -62,40 +93,43 @@ export default function ChooseLocation({ navigation }: any) {
       {/* <Text style={{ fontSize: 20, marginBottom: 20 }}>
         Choose a Location for Data Collection
       </Text> */}
-      {locations.map((loc) => {
-        return (
-          <View style={styles.locationCard}>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontSize: 24 }}>Name: {loc.name}</Text>
-              <Text>
-                Location: {loc.city}, {loc.state}
-              </Text>
-              <Text>ID: {loc.id}</Text>
+      {!isLoading &&
+        locationsFromApi?.map((loc: any) => {
+          console.log(loc.lat);
+          console.log(loc.lon);
+          return (
+            <View style={styles.locationCard} key={loc.id}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontSize: 24 }}>Name: {loc.name}</Text>
+                <Text>
+                  Location: {loc.city}, {loc.state}
+                </Text>
+                <Text>ID: {loc.id}</Text>
 
-              <Text>Data Points: {loc.numDataPoints}</Text>
-              <Pressable
-                onPress={() => {
-                  // setLocation(loc);
-                  // alert(`${loc.id} set as primary location`);
-                  navigation.navigate("Location", { locationId: loc.id });
-                }}
-              >
-                <Text style={styles.locationCardButton}>Select Location</Text>
-              </Pressable>
-            </View>
+                <Text>Data Points: {loc.numDataPoints}</Text>
+                <Pressable
+                  onPress={() => {
+                    // setLocation(loc);
+                    // alert(`${loc.id} set as primary location`);
+                    navigation.navigate("Location", { locationId: loc.id });
+                  }}
+                >
+                  <Text style={styles.locationCardButton}>Select Location</Text>
+                </Pressable>
+              </View>
 
-            <View style={{ flex: 1 }}>
-              <MapView style={styles.map}>
-                <Camera
-                  zoomLevel={14}
-                  centerCoordinate={[loc.lat, loc.lon]}
-                  animationMode="none"
-                />
-              </MapView>
+              <View style={{ flex: 1 }}>
+                <MapView style={styles.map}>
+                  <Camera
+                    zoomLevel={14}
+                    centerCoordinate={[loc.lat, loc.lon]}
+                    animationMode="none"
+                  />
+                </MapView>
+              </View>
             </View>
-          </View>
-        );
-      })}
+          );
+        })}
     </ScrollView>
   );
 }

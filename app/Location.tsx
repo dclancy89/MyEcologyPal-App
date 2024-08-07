@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Button,
   Text,
@@ -18,6 +18,8 @@ import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
 
 import locationsList from "@/assets/data/locations.json";
 import { Table, Row, Rows } from "react-native-table-component";
+import axios from "axios";
+import { API_KEY, GET_LOCATION_WITH_DATA_BY_ID } from "@/constants/Api";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
@@ -34,6 +36,8 @@ export default function LocationScreen({ route, navigation }: any) {
   ) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
+  const [locationToViewFromApi, setLocationToViewFromApi] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [locationToView, setLocationToView] = useState<Location>(
     getLocationById(locationId)
@@ -73,6 +77,23 @@ export default function LocationScreen({ route, navigation }: any) {
     },
   });
 
+  useEffect(() => {
+    axios
+      .get(GET_LOCATION_WITH_DATA_BY_ID, {
+        headers: {
+          "x-api-key": API_KEY,
+          Accept: "application/json",
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data.location);
+        console.log(res.data.data);
+        setLocationToViewFromApi(res.data);
+      });
+    setIsLoading(false);
+  }, []);
+
   const tableData = {
     tableHead: ["Id", "Type", "Date/Time", "Lat/Lon"],
     tableData: [
@@ -90,40 +111,53 @@ export default function LocationScreen({ route, navigation }: any) {
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <View>
-          <Text style={{ fontSize: 24 }}>Name: {locationToView.name}</Text>
-          <Text>
-            Location: {locationToView.city}, {locationToView.state}
-          </Text>
-          <Text>ID: {locationToView.id}</Text>
+      {!isLoading && (
+        <>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <View>
+              <Text style={{ fontSize: 24 }}>
+                Name: {locationToViewFromApi.location.name}
+              </Text>
+              <Text>
+                Location: {locationToViewFromApi.location.city},{" "}
+                {locationToViewFromApi.location.state}
+              </Text>
+              <Text>ID: {locationToViewFromApi.location.id}</Text>
 
-          <Text>Data Points: {locationToView.numDataPoints}</Text>
-        </View>
-        <View style={{ marginRight: 30 }}>
-          <Pressable
-            onPress={() => {
-              navigation.navigate("CollectData");
+              <Text>Data Points: {locationToViewFromApi.data.length}</Text>
+            </View>
+            <View style={{ marginRight: 30 }}>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("CollectData");
+                }}
+              >
+                <Text style={styles.button}>Collect Data</Text>
+              </Pressable>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              height: 400,
             }}
           >
-            <Text style={styles.button}>Collect Data</Text>
-          </Pressable>
-        </View>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          height: 400,
-        }}
-      >
-        <MapView style={styles.map}>
-          <Camera
-            zoomLevel={14}
-            centerCoordinate={[locationToView.lat, locationToView.lon]}
-            animationMode="none"
-          />
-        </MapView>
-      </View>
+            <MapView style={styles.map}>
+              <Camera
+                zoomLevel={14}
+                centerCoordinate={[
+                  locationToViewFromApi.location.lat,
+                  locationToViewFromApi.location.lon,
+                ]}
+                animationMode="none"
+              />
+            </MapView>
+          </View>
+        </>
+      )}
+
       <View style={{ flex: 1 }}>
         <Text>Data Collected</Text>
         <Table>
