@@ -20,6 +20,7 @@ import locationsList from "@/assets/data/locations.json";
 import { Table, Row, Rows } from "react-native-table-component";
 import axios from "axios";
 import { API_KEY, GET_LOCATION_WITH_DATA_BY_ID } from "@/constants/Api";
+import { DataTemplateType } from "@/enums/DataTemplateType.enum";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
@@ -94,15 +95,22 @@ export default function LocationScreen({ route, navigation }: any) {
     setIsLoading(false);
   }, []);
 
+  const mappedDataPoints = locationToViewFromApi?.data?.map(
+    (dataPoint: any) => {
+      return [
+        dataPoint.id,
+        DataTemplateType[
+          dataPoint.templateType as keyof typeof DataTemplateType
+        ],
+        new Date(dataPoint.createdAt).toLocaleString(),
+        `${dataPoint.lat}, ${dataPoint.lon}`,
+      ];
+    }
+  );
+
   const tableData = {
     tableHead: ["Id", "Type", "Date/Time", "Lat/Lon"],
-    tableData: [
-      ["1", "Water Sample", "Oct 1, 2024", "10, 40"],
-      ["2", "Water Sample", "Oct 1, 2024", "10, 40"],
-      ["3", "Water Sample", "Oct 1, 2024", "10, 40"],
-      ["4", "Water Sample", "Oct 1, 2024", "10, 40"],
-      ["5", "Water Sample", "Oct 1, 2024", "10, 40"],
-    ],
+    tableData: mappedDataPoints,
   };
 
   return (
@@ -111,7 +119,7 @@ export default function LocationScreen({ route, navigation }: any) {
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
-      {!isLoading && (
+      {!isLoading && locationToViewFromApi && (
         <>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}

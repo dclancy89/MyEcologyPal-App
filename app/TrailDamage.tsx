@@ -14,6 +14,7 @@ import {
   TextInput,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import Geolocation from "react-native-geolocation-service";
 
 export default function TrailDamage({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
@@ -76,6 +77,20 @@ export default function TrailDamage({ navigation }: any) {
     { label: "Ground Damage", value: "GD" },
   ];
 
+  const getLocationData = async () => {
+    Geolocation.getCurrentPosition(
+      (position) => {
+        console.log(position);
+        alert(`[${position.coords.latitude}, ${position.coords.longitude}]`);
+      },
+      (error) => {
+        // See error code charts below.
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 3000, maximumAge: 10000 }
+    );
+  };
+
   return (
     <ScrollView style={styles.container} overScrollMode={"never"}>
       <View style={{ marginBottom: 20 }}>
@@ -112,7 +127,8 @@ export default function TrailDamage({ navigation }: any) {
         <Button
           color={theme.button}
           title="Record Data"
-          onPress={() => {
+          onPress={async () => {
+            await getLocationData();
             alert("recording data...");
           }}
         />

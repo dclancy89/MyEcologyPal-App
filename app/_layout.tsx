@@ -13,8 +13,23 @@ import UploadData from "./UploadData";
 import LocationProvider from "@/contexts/LocationContext";
 import ThemeProvider from "@/contexts/ThemeContext";
 import ModeProvider from "@/contexts/ModeContext";
+import { Button } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
+
+const HomeButton: React.FC = () => {
+  const navigation = useNavigation();
+  const homeScreen = "index" as never;
+  return (
+    <Button
+      onPress={() => {
+        navigation.navigate(homeScreen);
+      }}
+      title="Home"
+    />
+  );
+};
 
 export default function RootLayout() {
   return (
@@ -32,47 +47,66 @@ export default function RootLayout() {
               component={ChooseLocation}
               options={{
                 title: "Choose Location",
+                headerRight: () => <HomeButton />,
               }}
             />
             <Stack.Screen
               name="CollectData"
               component={CollectData}
-              options={{ title: "Collect Data" }}
+              options={{
+                title: "Collect Data",
+                headerRight: () => <HomeButton />,
+              }}
             />
             <Stack.Screen
               name="Settings"
               component={Settings}
-              options={{ title: "Settings" }}
+              options={{ title: "Settings", headerRight: () => <HomeButton /> }}
             />
             <Stack.Screen
               name="Location"
               component={LocationScreen}
-              options={{ title: "Location" }}
+              options={{ title: "Location", headerRight: () => <HomeButton /> }}
             />
             <Stack.Screen
               name="WaterSample"
               component={WaterSample}
-              options={{ title: "Water Sample" }}
+              options={{
+                title: "Water Sample",
+                headerRight: () => <HomeButton />,
+              }}
             />
             <Stack.Screen
               name="InvasiveSpecies"
               component={InvasiveSpecies}
-              options={{ title: "Invasive Species" }}
+              options={{
+                title: "Invasive Species",
+                headerRight: () => <HomeButton />,
+              }}
             />
             <Stack.Screen
               name="TrailDamage"
               component={TrailDamage}
-              options={{ title: "Trail Damage" }}
+              options={{
+                title: "Trail Damage",
+                headerRight: () => <HomeButton />,
+              }}
             />
             <Stack.Screen
               name="AtRiskSpecies"
               component={AtRiskSpecies}
-              options={{ title: "At Risk Species" }}
+              options={{
+                title: "At Risk Species",
+                headerRight: () => <HomeButton />,
+              }}
             />
             <Stack.Screen
               name="UploadData"
               component={UploadData}
-              options={{ title: "Upload Data" }}
+              options={{
+                title: "Upload Data",
+                headerRight: () => <HomeButton />,
+              }}
             />
           </Stack.Navigator>
         </LocationProvider>
