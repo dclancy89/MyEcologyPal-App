@@ -83,6 +83,7 @@ export default function Index({ navigation }: any) {
         {homePageButtons.map((button) => {
           return (
             <Pressable
+              key={button.navigationLocation}
               style={styles.button}
               onPress={() => {
                 if (mode === AppMode.Online || button.allowedOffline) {

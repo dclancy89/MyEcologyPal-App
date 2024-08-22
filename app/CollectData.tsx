@@ -89,6 +89,7 @@ export default function CollectData({ navigation }: any) {
           {dataTemplates.map((template) => {
             return (
               <Pressable
+                key={template.navigationLocation}
                 style={styles.locationCard}
                 onPress={() => {
                   navigation.navigate(template.navigationLocation);
