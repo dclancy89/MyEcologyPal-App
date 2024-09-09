@@ -3,22 +3,22 @@ import {
   LocationContextType,
 } from "@/contexts/LocationContext";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
-import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
-import { useContext, useState } from "react";
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  TextInput,
-} from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
+import { ModeContext, ModeContextType } from "@/contexts/ModeContext";
+import { useContext, useEffect, useState } from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
+
+import { Row, Rows, Table } from "react-native-table-component";
+import { getDataFromAsyncStorage } from "@/utilities/getFromAsyncStorage";
+import axios from "axios";
+import { API_KEY, POST_CREATE_DATA_POINTS } from "@/constants/Api";
+import { removeFromAsyncStorage } from "@/utilities/removeFromAsyncStorage";
 
 export default function UploadData({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
+
+  const [dataPointsToSave, setDataPointsToSave] = useState([]);
 
   const styles = StyleSheet.create({
     container: {
@@ -67,12 +67,57 @@ export default function UploadData({ navigation }: any) {
     },
   });
 
-  const dropdownOptions = [
-    { label: "Overgrown Trail", value: "OT" },
-    { label: "Blocked Trail", value: "BT" },
-    { label: "Damaged Structure", value: "DS" },
-    { label: "Ground Damage", value: "GD" },
-  ];
+  useEffect(() => {
+    getDataFromAsyncStorage(setDataPointsToSave);
+  }, []);
+
+  const mappedData = dataPointsToSave?.map((dataPoint: any) => {
+    return [
+      dataPoint.locationId,
+      dataPoint.template,
+      dataPoint.data,
+      new Date(dataPoint.timestamp).toLocaleString(),
+      `[${dataPoint.location.latitude} ${dataPoint.location.longitude}]`,
+    ];
+  });
+
+  const tableData = {
+    tableHead: ["LocationId", "Template", "Data", "Date/Time", "Lat/Lon"],
+    tableData: mappedData,
+  };
+
+  const saveDataToApi = () => {
+    const createDataPointDtos = dataPointsToSave.map((data: any) => {
+      return {
+        locationId: data.locationId || location.id,
+        templateType: data.template,
+        data: data.data,
+        lat: data.location.latitude,
+        lon: data.location.longitude,
+        recordedAt: new Date(data.timestamp),
+      };
+    });
+
+    axios
+      .post(POST_CREATE_DATA_POINTS, createDataPointDtos, {
+        headers: {
+          "x-api-key": API_KEY,
+          Accept: "application/json",
+          "content-type": "application/json",
+        },
+      })
+      .then((res) => {
+        if (res.status === 201) {
+          alert("Successfully saved data to server.");
+          removeFromAsyncStorage();
+          navigation.navigate("index");
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+        alert("There was an error");
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -80,10 +125,17 @@ export default function UploadData({ navigation }: any) {
         <Text>Current Location ID: {location.id}</Text>
         <Text>Current Mode: {mode}</Text>
       </View>
+      <View>
+        <Table>
+          <Row data={tableData.tableHead} />
+          <Rows data={tableData.tableData} />
+        </Table>
+      </View>
       <Button
+        disabled={!dataPointsToSave.length}
         title="Upload Data"
         onPress={() => {
-          alert("Uploading data...");
+          saveDataToApi();
         }}
       />
     </View>

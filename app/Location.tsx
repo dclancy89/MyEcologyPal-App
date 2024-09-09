@@ -73,6 +73,9 @@ export default function LocationScreen({ route, navigation }: any) {
       textAlign: "center",
       minWidth: 300,
     },
+    disabled: {
+      backgroundColor: "gray",
+    },
     map: {
       flex: 1,
     },
@@ -88,8 +91,6 @@ export default function LocationScreen({ route, navigation }: any) {
         },
       })
       .then((res) => {
-        console.log(res.data.location);
-        console.log(res.data.data);
         setLocationToViewFromApi(res.data);
       });
     setIsLoading(false);
@@ -99,17 +100,16 @@ export default function LocationScreen({ route, navigation }: any) {
     (dataPoint: any) => {
       return [
         dataPoint.id,
-        DataTemplateType[
-          dataPoint.templateType as keyof typeof DataTemplateType
-        ],
-        new Date(dataPoint.createdAt).toLocaleString(),
+        dataPoint.templateType,
+        JSON.stringify(dataPoint.data),
+        new Date(dataPoint.recordedAt).toLocaleString(),
         `${dataPoint.lat}, ${dataPoint.lon}`,
       ];
     }
   );
 
   const tableData = {
-    tableHead: ["Id", "Type", "Date/Time", "Lat/Lon"],
+    tableHead: ["Id", "Type", "Data", "Date/Time", "Lat/Lon"],
     tableData: mappedDataPoints,
   };
 
@@ -139,7 +139,23 @@ export default function LocationScreen({ route, navigation }: any) {
             <View style={{ marginRight: 30 }}>
               <Pressable
                 onPress={() => {
-                  navigation.navigate("CollectData");
+                  setLocation(locationToViewFromApi.location);
+                  alert(
+                    `Set ${locationToViewFromApi.location.name} as primary location`
+                  );
+                }}
+              >
+                <Text style={styles.button}>Make Primary Location</Text>
+              </Pressable>
+              <Pressable
+                onPress={() => {
+                  if (locationId !== location.id) {
+                    alert(
+                      "Please make this location the primary location first."
+                    );
+                  } else {
+                    navigation.navigate("CollectData");
+                  }
                 }}
               >
                 <Text style={styles.button}>Collect Data</Text>

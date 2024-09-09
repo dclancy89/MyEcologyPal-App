@@ -95,8 +95,6 @@ export default function ChooseLocation({ navigation }: any) {
       </Text> */}
       {!isLoading &&
         locationsFromApi?.map((loc: any) => {
-          console.log(loc.lat);
-          console.log(loc.lon);
           return (
             <View style={styles.locationCard} key={loc.id}>
               <View style={{ flex: 1 }}>

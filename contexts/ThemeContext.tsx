@@ -16,10 +16,10 @@ const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const theme: ThemeContextType = {
     theme: {
-      background: "#DEF9C4",
+      background: "#e4f0da",
       primary: "#9CDBA6",
-      secondary: "#50B498",
-      button: "#468585",
+      secondary: "#91db6c",
+      button: "#246848",
     },
   };
 

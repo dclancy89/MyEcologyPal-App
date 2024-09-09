@@ -3,8 +3,8 @@ import {
   LocationContextType,
 } from "@/contexts/LocationContext";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
-import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
-import { useContext, useEffect, useState } from "react";
+import { ModeContext, ModeContextType } from "@/contexts/ModeContext";
+import { useContext, useState } from "react";
 import {
   Button,
   StyleSheet,
@@ -16,9 +16,10 @@ import {
   Pressable,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import Geolocation from "react-native-geolocation-service";
 import { TrailDamageCategory } from "@/enums/TrailDamageCategory.enum";
 import { saveToAsyncStorage } from "@/utilities/saveToAsyncStorage";
+import { DataTemplateType } from "@/enums/DataTemplateType.enum";
+import { generateMetaData } from "@/utilities/generateMetaData";
 
 export default function TrailDamage({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
@@ -85,44 +86,6 @@ export default function TrailDamage({ navigation }: any) {
     { label: "Ground Damage", value: "GD" },
   ];
 
-  const recordData = async () => {
-    setIsLoading(true);
-
-    const data = {
-      category: category,
-      description: description,
-      location: {},
-      timestamp: Date.now(),
-    };
-
-    Geolocation.getCurrentPosition(
-      async (position) => {
-        data.location = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        };
-
-        setDataToSave(data);
-        setShowConfirmModal(true);
-
-        setIsLoading(false);
-      },
-      (error) => {
-        // See error code charts below.
-        alert("Error determining Location. Please try again.");
-        console.log(error.code, error.message);
-        setIsLoading(false);
-      },
-      {
-        accuracy: { android: "high" },
-        enableHighAccuracy: true,
-        timeout: 3000,
-        maximumAge: 10000,
-        forceRequestLocation: true,
-      }
-    );
-  };
-
   return (
     <ScrollView style={styles.container} overScrollMode={"never"}>
       <View style={{ marginBottom: 20 }}>
@@ -168,99 +131,109 @@ export default function TrailDamage({ navigation }: any) {
           color={theme.button}
           title="Record Data"
           onPress={async () => {
-            recordData();
+            generateMetaData(
+              { category: category, description: description },
+              location.id,
+              DataTemplateType.TrailDamage,
+              setIsLoading,
+              setDataToSave,
+              setShowConfirmModal
+            );
           }}
         />
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showConfirmModal}
-          onRequestClose={() => {
-            setShowConfirmModal(false);
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "white",
-              justifyContent: "center",
-              alignItems: "center",
-              flex: 1,
-              margin: 20,
-              borderRadius: 20,
-              padding: 35,
-              elevation: 5,
+        {dataToSave && (
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showConfirmModal}
+            onRequestClose={() => {
+              setShowConfirmModal(false);
             }}
           >
-            <Text style={{ fontSize: 40, paddingBottom: 20 }}>
-              Confirm Data
-            </Text>
-            <Text>
-              Please double check the below data and hit confirm to save it.
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-                Category:
-              </Text>{" "}
-              {
-                TrailDamageCategory[
-                  dataToSave?.category as keyof typeof TrailDamageCategory
-                ]
-              }
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-                Description:
-              </Text>{" "}
-              {dataToSave?.description}
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-                Location:
-              </Text>{" "}
-              [{dataToSave?.location?.latitude},{" "}
-              {dataToSave?.location?.longitude}]
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "bold", fontSize: 18 }}>
-                Timestamp:
-              </Text>{" "}
-              {new Date(dataToSave?.timestamp).toLocaleString()}
-            </Text>
-            <View style={{ flexDirection: "row" }}>
-              <Pressable
-                style={{
-                  marginTop: 20,
-                  borderRadius: 20,
-                  paddingVertical: 10,
-                  paddingHorizontal: 30,
-                  elevation: 2,
-                  backgroundColor: "orange",
-                }}
-                onPress={async () => {
-                  await saveToAsyncStorage(dataToSave, navigation);
-                }}
-              >
-                <Text>Confirm</Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  marginTop: 20,
-                  marginLeft: 20,
-                  borderRadius: 20,
-                  paddingVertical: 10,
-                  paddingHorizontal: 30,
-                  elevation: 2,
-                  backgroundColor: "gray",
-                }}
-                onPress={() => {
-                  setShowConfirmModal(false);
-                }}
-              >
-                <Text>Cancel</Text>
-              </Pressable>
+            <View
+              style={{
+                backgroundColor: "white",
+                justifyContent: "center",
+                alignItems: "center",
+                flex: 1,
+                margin: 20,
+                borderRadius: 20,
+                padding: 35,
+                elevation: 5,
+              }}
+            >
+              <Text style={{ fontSize: 40, paddingBottom: 20 }}>
+                Confirm Data
+              </Text>
+              <Text>
+                Please double check the below data and hit confirm to save it.
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+                  Category:
+                </Text>{" "}
+                {
+                  TrailDamageCategory[
+                    JSON.parse(dataToSave?.data)
+                      .category as keyof typeof TrailDamageCategory
+                  ]
+                }
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+                  Description:
+                </Text>{" "}
+                {JSON.parse(dataToSave?.data).description}
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+                  Location:
+                </Text>{" "}
+                [{dataToSave?.location?.latitude},{" "}
+                {dataToSave?.location?.longitude}]
+              </Text>
+              <Text>
+                <Text style={{ fontWeight: "bold", fontSize: 18 }}>
+                  Timestamp:
+                </Text>{" "}
+                {new Date(dataToSave?.timestamp).toLocaleString()}
+              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Pressable
+                  style={{
+                    marginTop: 20,
+                    borderRadius: 20,
+                    paddingVertical: 10,
+                    paddingHorizontal: 30,
+                    elevation: 2,
+                    backgroundColor: "orange",
+                  }}
+                  onPress={async () => {
+                    await saveToAsyncStorage(dataToSave, navigation);
+                  }}
+                >
+                  <Text>Confirm</Text>
+                </Pressable>
+                <Pressable
+                  style={{
+                    marginTop: 20,
+                    marginLeft: 20,
+                    borderRadius: 20,
+                    paddingVertical: 10,
+                    paddingHorizontal: 30,
+                    elevation: 2,
+                    backgroundColor: "gray",
+                  }}
+                  onPress={() => {
+                    setShowConfirmModal(false);
+                  }}
+                >
+                  <Text>Cancel</Text>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        )}
       </View>
     </ScrollView>
   );
