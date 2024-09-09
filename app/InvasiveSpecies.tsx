@@ -123,6 +123,7 @@ export default function InvasiveSpecies({ navigation }: any) {
           />
         </View>
         <Button
+          disabled={isLoading}
           color={theme.button}
           title="Record Data"
           onPress={() => {
