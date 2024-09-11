@@ -1,5 +1,3 @@
-export const API_KEY = "OUnRnXlfpFTN4PbkBPVTB0Eka79T7z";
-
 // export const BASE_URL = "http://10.0.2.2:3000/";
 export const BASE_URL = "https://dolphin-app-6uscb.ondigitalocean.app/";
 

@@ -7,10 +7,11 @@ import {
 } from "@/contexts/LocationContext";
 import { ThemeContext, ThemeContextType } from "@/contexts/ThemeContext";
 import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
-import locations from "@/assets/data/locations.json";
-import { API_KEY, GET_LOCATIONS_API } from "@/constants/Api";
+
+import { GET_LOCATIONS_API } from "@/constants/Api";
 import axios from "axios";
-import utf8 from "utf8";
+
+import { getApiKeyFromAsyncStorage } from "@/utilities/getApiKeyFromAsyncStorage";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
@@ -20,6 +21,7 @@ export default function ChooseLocation({ navigation }: any) {
   const { location, setLocation } = useContext(
     LocationContext
   ) as LocationContextType;
+  const [apiKey, setApiKey] = useState<string>();
   const [locationsFromApi, setLocationsFromApi] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { theme } = useContext(ThemeContext) as ThemeContextType;
@@ -59,30 +61,36 @@ export default function ChooseLocation({ navigation }: any) {
   });
 
   useEffect(() => {
-    axios
-      .get(GET_LOCATIONS_API, {
-        headers: {
-          "x-api-key": API_KEY,
-          Accept: "application/json",
-          "content-type": "application/json",
-        },
-      })
-      .then((res) => {
-        setLocationsFromApi(
-          res.data.map((location: any) => {
-            return {
-              id: location.id,
-              name: location.name,
-              city: location.city,
-              state: location.state,
-              lat: location.lat,
-              lon: location.lon,
-            };
-          })
-        );
-      });
-    setIsLoading(false);
+    getApiKeyFromAsyncStorage(setApiKey);
   }, []);
+
+  useEffect(() => {
+    if (apiKey) {
+      axios
+        .get(GET_LOCATIONS_API, {
+          headers: {
+            "x-api-key": apiKey,
+            Accept: "application/json",
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          setLocationsFromApi(
+            res.data.map((location: any) => {
+              return {
+                id: location.id,
+                name: location.name,
+                city: location.city,
+                state: location.state,
+                lat: location.lat,
+                lon: location.lon,
+              };
+            })
+          );
+        });
+      setIsLoading(false);
+    }
+  }, [apiKey]);
 
   return (
     <ScrollView overScrollMode={"never"} style={styles.container}>

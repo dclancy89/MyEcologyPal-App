@@ -12,13 +12,20 @@ import { getDataFromAsyncStorage } from "@/utilities/getFromAsyncStorage";
 import axios from "axios";
 import { API_KEY, POST_CREATE_DATA_POINTS } from "@/constants/Api";
 import { removeFromAsyncStorage } from "@/utilities/removeFromAsyncStorage";
+import { getApiKeyFromAsyncStorage } from "@/utilities/getApiKeyFromAsyncStorage";
 
 export default function UploadData({ navigation }: any) {
   const { location } = useContext(LocationContext) as LocationContextType;
   const { theme } = useContext(ThemeContext) as ThemeContextType;
   const { mode } = useContext(ModeContext) as ModeContextType;
 
+  const [apiKey, setApiKey] = useState<string>();
+
   const [dataPointsToSave, setDataPointsToSave] = useState([]);
+
+  useEffect(() => {
+    getApiKeyFromAsyncStorage(setApiKey);
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -101,7 +108,7 @@ export default function UploadData({ navigation }: any) {
     axios
       .post(POST_CREATE_DATA_POINTS, createDataPointDtos, {
         headers: {
-          "x-api-key": API_KEY,
+          "x-api-key": apiKey,
           Accept: "application/json",
           "content-type": "application/json",
         },

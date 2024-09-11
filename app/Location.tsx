@@ -19,8 +19,8 @@ import { ModeContext, ModeContextType, AppMode } from "@/contexts/ModeContext";
 import locationsList from "@/assets/data/locations.json";
 import { Table, Row, Rows } from "react-native-table-component";
 import axios from "axios";
-import { API_KEY, GET_LOCATION_WITH_DATA_BY_ID } from "@/constants/Api";
-import { DataTemplateType } from "@/enums/DataTemplateType.enum";
+import { GET_LOCATION_WITH_DATA_BY_ID } from "@/constants/Api";
+import { getApiKeyFromAsyncStorage } from "@/utilities/getApiKeyFromAsyncStorage";
 
 Mapbox.setAccessToken(
   "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
@@ -39,10 +39,14 @@ export default function LocationScreen({ route, navigation }: any) {
   const { mode } = useContext(ModeContext) as ModeContextType;
   const [locationToViewFromApi, setLocationToViewFromApi] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [apiKey, setApiKey] = useState<string>();
   const [locationToView, setLocationToView] = useState<Location>(
     getLocationById(locationId)
   );
+
+  useEffect(() => {
+    getApiKeyFromAsyncStorage(setApiKey);
+  }, []);
 
   const styles = StyleSheet.create({
     container: {
@@ -82,19 +86,21 @@ export default function LocationScreen({ route, navigation }: any) {
   });
 
   useEffect(() => {
-    axios
-      .get(GET_LOCATION_WITH_DATA_BY_ID, {
-        headers: {
-          "x-api-key": API_KEY,
-          Accept: "application/json",
-          "content-type": "application/json",
-        },
-      })
-      .then((res) => {
-        setLocationToViewFromApi(res.data);
-      });
-    setIsLoading(false);
-  }, []);
+    if (apiKey) {
+      axios
+        .get(GET_LOCATION_WITH_DATA_BY_ID, {
+          headers: {
+            "x-api-key": apiKey,
+            Accept: "application/json",
+            "content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          setLocationToViewFromApi(res.data);
+        });
+      setIsLoading(false);
+    }
+  }, [apiKey]);
 
   const mappedDataPoints = locationToViewFromApi?.data?.map(
     (dataPoint: any) => {
