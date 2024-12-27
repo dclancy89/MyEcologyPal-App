@@ -2,14 +2,7 @@ import { localApiKey } from "@/constants/Storage";
 import { getApiKeyFromAsyncStorage } from "@/utilities/getApiKeyFromAsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import {
-  Button,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-} from "react-native";
+import { Button, Text, TextInput, View, StyleSheet } from "react-native";
 
 export default function Settings({ navigation }: any) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
