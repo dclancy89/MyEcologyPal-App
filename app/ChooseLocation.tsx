@@ -13,9 +13,7 @@ import axios from "axios";
 
 import { getApiKeyFromAsyncStorage } from "@/utilities/getApiKeyFromAsyncStorage";
 
-Mapbox.setAccessToken(
-  "pk.eyJ1IjoiZGNsYW5jeTg5IiwiYSI6ImNsazE4Y2JqaDAzd2czbm54b2U5ZDVmMnAifQ.bjJQXqxuWeUVuRR1d2-aaw"
-);
+Mapbox.setAccessToken("PUT_TOKEN_HERE");
 
 export default function ChooseLocation({ navigation }: any) {
   const { location, setLocation } = useContext(
